@@ -16,6 +16,9 @@ export default new Vuex.Store({
         
     },
     actions: {
+        tambahTodo: ({ commit, state }, payload => {
+            state.todos.push
+        }),
         deleteTodo: ({ commit, state }, payload) => {
             state.todos = state.todos.filter(todo => todo.id !== payload)
         }

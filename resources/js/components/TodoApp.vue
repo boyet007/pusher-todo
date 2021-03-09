@@ -10,7 +10,7 @@
 <script>
 import newTodo from "../components/NewTodo.vue";
 import todoList from "../components/TodoList.vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
     components: {
@@ -29,6 +29,9 @@ export default {
     },
     computed: {
         ...mapGetters(["newTodo", "toRemove"])
+    },
+    methods: {
+         ...mapActions(['tambahTodo'])
     }
 };
 </script>
