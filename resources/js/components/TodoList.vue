@@ -1,7 +1,7 @@
 <template>
     <ul>
         <li v-for="todo in todos" :key="todo.id">
-            <todo @delete="deleteTodo(todo.id)" :todo="todo" />
+            <todo @tick="completeTodo(todo)" @delete="deleteTodo(todo)" :todo="todo" />
         </li>
     </ul>
 </template>
@@ -17,9 +17,12 @@ export default {
     },
     components: { Todo },
     methods: {
-        ...mapActions([
-            'deleteTodo'
-        ])
+        deleteTodo(id) {
+            this.$store.dispatch('deleteTodo', id);
+        },
+        completeTodo(todo) {
+            this.$store.dispatch('completeTodo', todo)
+        }
     }
 };
 </script>

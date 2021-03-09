@@ -1890,6 +1890,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var uniqid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uniqid */ "./node_modules/uniqid/index.js");
+/* harmony import */ var uniqid__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(uniqid__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
 //
 //
 //
@@ -1901,8 +1907,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  methods: {}
+  data: function data() {
+    return {
+      todoTeks: ""
+    };
+  },
+  methods: {
+    tambahTodo: function tambahTodo(text) {
+      var todo = {
+        id: uniqid__WEBPACK_IMPORTED_MODULE_0___default()(),
+        text: text,
+        done: false
+      };
+      this.$store.dispatch("tambahTodo", todo);
+      this.todoTeks = "";
+    }
+  }
 });
 
 /***/ }),
@@ -1927,6 +1949,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   methods: {
+    tick: function tick() {
+      this.$emit('tick');
+    },
     hapus: function hapus() {
       this.$emit('delete');
     }
@@ -1974,7 +1999,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   components: {
     Todo: _Todo_vue__WEBPACK_IMPORTED_MODULE_0__.default
   },
-  methods: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)(['deleteTodo']))
+  methods: {
+    deleteTodo: function deleteTodo(id) {
+      this.$store.dispatch('deleteTodo', id);
+    },
+    completeTodo: function completeTodo(todo) {
+      this.$store.dispatch('completeTodo', todo);
+    }
+  }
 });
 
 /***/ }),
@@ -2039,8 +2071,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__.default({
   broadcaster: 'pusher',
-  key: "",
-  cluster: "mt1",
+  key: "7eef6aad57f8c75e7d1e",
+  cluster: "eu",
   encrypted: false
 });
 
@@ -2082,20 +2114,31 @@ vue__WEBPACK_IMPORTED_MODULE_0__.default.use(vuex__WEBPACK_IMPORTED_MODULE_1__.d
       done: false
     }]
   },
-  mutations: {},
+  mutations: {
+    TAMBAH_TODO: function TAMBAH_TODO(state, todo) {
+      state.todos.push(todo);
+    },
+    HAPUS_TODO: function HAPUS_TODO(state, todo) {
+      var todos = state.todos;
+      console.log('indexOf todo', todos.indexOf(todo));
+      todos.splice(todos.indexOf(todo), 1);
+    },
+    COMPLETE_TODO: function COMPLETE_TODO(state, todo) {
+      todo.done != todo.done;
+    }
+  },
   actions: {
-    tambahTodo: ({
-      commit: commit,
-      state: state
-    }, function (payload) {
-      state.todos.push;
-    }),
-    deleteTodo: function deleteTodo(_ref, payload) {
-      var commit = _ref.commit,
-          state = _ref.state;
-      state.todos = state.todos.filter(function (todo) {
-        return todo.id !== payload;
-      });
+    tambahTodo: function tambahTodo(_ref, payload) {
+      var commit = _ref.commit;
+      commit('TAMBAH_TODO', payload);
+    },
+    deleteTodo: function deleteTodo(_ref2, payload) {
+      var commit = _ref2.commit;
+      commit('HAPUS_TODO', payload);
+    },
+    completeTodo: function completeTodo(_ref3, payload) {
+      var commit = _ref3.commit;
+      commit('COMPLETE_TODO', payload);
     }
   }
 }));
@@ -25639,6 +25682,47 @@ runtime.setup(pusher_Pusher);
 
 /***/ }),
 
+/***/ "./node_modules/uniqid/index.js":
+/*!**************************************!*\
+  !*** ./node_modules/uniqid/index.js ***!
+  \**************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/* provided dependency */ var process = __webpack_require__(/*! process/browser */ "./node_modules/process/browser.js");
+/* 
+(The MIT License)
+Copyright (c) 2014-2021 Halász Ádám <adam@aimform.com>
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+//  Unique Hexatridecimal ID Generator
+// ================================================
+
+//  Dependencies
+// ================================================
+var pid = typeof process !== 'undefined' && process.pid ? process.pid.toString(36) : '' ;
+var address = '';
+if(false){ var i, mac, networkInterfaces; } 
+
+//  Exports
+// ================================================
+module.exports = module.exports.default = function(prefix, suffix){ return (prefix ? prefix : '') + address + pid + now().toString(36) + (suffix ? suffix : ''); }
+module.exports.process = function(prefix, suffix){ return (prefix ? prefix : '') + pid + now().toString(36) + (suffix ? suffix : ''); }
+module.exports.time    = function(prefix, suffix){ return (prefix ? prefix : '') + now().toString(36) + (suffix ? suffix : ''); }
+
+//  Helpers
+// ================================================
+function now(){
+    var time = Date.now();
+    var last = now.last || time;
+    return now.last = time > last ? time : last + 1;
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-fragment/dist/vue-fragment.esm.js":
 /*!************************************************************!*\
   !*** ./node_modules/vue-fragment/dist/vue-fragment.esm.js ***!
@@ -26011,7 +26095,36 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "input-group mb-3" }, [
-    _c("input", { staticClass: "form-control", attrs: { type: "text" } }),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.todoTeks,
+          expression: "todoTeks"
+        }
+      ],
+      staticClass: "form-control",
+      attrs: { type: "text" },
+      domProps: { value: _vm.todoTeks },
+      on: {
+        keyup: function($event) {
+          if (
+            !$event.type.indexOf("key") &&
+            _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+          ) {
+            return null
+          }
+          return _vm.tambahTodo(_vm.todoTeks)
+        },
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.todoTeks = $event.target.value
+        }
+      }
+    }),
     _vm._v(" "),
     _c("div", { staticClass: "input-group-append" }, [
       _c(
@@ -26019,7 +26132,11 @@ var render = function() {
         {
           staticClass: "btn btn-outline-success",
           attrs: { type: "button" },
-          on: { click: _vm.tambahTodo }
+          on: {
+            click: function($event) {
+              return _vm.tambahTodo(_vm.todoTeks)
+            }
+          }
         },
         [_c("i", { staticClass: "fa fa-plus" })]
       )
@@ -26066,27 +26183,30 @@ var render = function() {
           : _vm.todo.done
       },
       on: {
-        change: function($event) {
-          var $$a = _vm.todo.done,
-            $$el = $event.target,
-            $$c = $$el.checked ? true : false
-          if (Array.isArray($$a)) {
-            var $$v = null,
-              $$i = _vm._i($$a, $$v)
-            if ($$el.checked) {
-              $$i < 0 && _vm.$set(_vm.todo, "done", $$a.concat([$$v]))
+        change: [
+          function($event) {
+            var $$a = _vm.todo.done,
+              $$el = $event.target,
+              $$c = $$el.checked ? true : false
+            if (Array.isArray($$a)) {
+              var $$v = null,
+                $$i = _vm._i($$a, $$v)
+              if ($$el.checked) {
+                $$i < 0 && _vm.$set(_vm.todo, "done", $$a.concat([$$v]))
+              } else {
+                $$i > -1 &&
+                  _vm.$set(
+                    _vm.todo,
+                    "done",
+                    $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                  )
+              }
             } else {
-              $$i > -1 &&
-                _vm.$set(
-                  _vm.todo,
-                  "done",
-                  $$a.slice(0, $$i).concat($$a.slice($$i + 1))
-                )
+              _vm.$set(_vm.todo, "done", $$c)
             }
-          } else {
-            _vm.$set(_vm.todo, "done", $$c)
-          }
-        }
+          },
+          _vm.tick
+        ]
       }
     }),
     _vm._v(" "),
@@ -26131,8 +26251,11 @@ var render = function() {
           _c("todo", {
             attrs: { todo: todo },
             on: {
+              tick: function($event) {
+                return _vm.completeTodo(todo)
+              },
               delete: function($event) {
-                return _vm.deleteTodo(todo.id)
+                return _vm.deleteTodo(todo)
               }
             }
           })
@@ -39559,6 +39682,18 @@ var index = {
 /******/ 	// It's empty as some runtime module handles the default behavior
 /******/ 	__webpack_require__.x = x => {};
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
