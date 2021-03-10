@@ -1,7 +1,7 @@
 <template>
     <fragment>
-        <input type="checkbox" @change="tick" v-model="todo.done"/>
-        <span>{{ todo.text }}</span>
+        <input type="checkbox" @change="tick" v-model="todo.completed"/>
+        <span>{{ todo.title }}</span>
         <i @click="hapus" class="float-right fas fa-times-circle"></i>
     </fragment>
 </template>

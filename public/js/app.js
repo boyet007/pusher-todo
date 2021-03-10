@@ -1890,8 +1890,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var uniqid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uniqid */ "./node_modules/uniqid/index.js");
-/* harmony import */ var uniqid__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(uniqid__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -1906,7 +1904,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -1915,13 +1917,12 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    tambahTodo: function tambahTodo(text) {
+    tambahTodo: function tambahTodo(title) {
       var todo = {
-        id: uniqid__WEBPACK_IMPORTED_MODULE_0___default()(),
-        text: text,
+        title: title,
         done: false
       };
-      this.$store.dispatch("tambahTodo", todo);
+      this.$store.dispatch("TAMBAH_TODO", todo);
       this.todoTeks = "";
     }
   }
@@ -2001,11 +2002,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     deleteTodo: function deleteTodo(id) {
-      this.$store.dispatch('deleteTodo', id);
+      this.$store.dispatch('DELETE_TODO', id);
     },
     completeTodo: function completeTodo(todo) {
-      this.$store.dispatch('completeTodo', todo);
+      this.$store.dispatch('COMPLETE_TODO', todo);
     }
+  },
+  mounted: function mounted() {
+    this.$store.dispatch('DAPAT_TODO');
   }
 });
 
@@ -2089,38 +2093,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 
 
-vue__WEBPACK_IMPORTED_MODULE_0__.default.use(vuex__WEBPACK_IMPORTED_MODULE_1__.default);
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vuex__WEBPACK_IMPORTED_MODULE_1__.default.Store({
+
+vue__WEBPACK_IMPORTED_MODULE_1__.default.use(vuex__WEBPACK_IMPORTED_MODULE_2__.default);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vuex__WEBPACK_IMPORTED_MODULE_2__.default.Store({
   state: {
-    todos: [{
-      id: 1,
-      text: 'bersih-bersih',
-      done: true
-    }, {
-      id: 2,
-      text: 'kerjakan latihan todo',
-      done: false
-    }, {
-      id: 3,
-      text: 'makan malam',
-      done: false
-    }, {
-      id: 4,
-      text: 'tidur',
-      done: false
-    }]
+    todos: []
   },
   mutations: {
+    DAPAT_TODO: function DAPAT_TODO(state, todos) {
+      state.todos = todos;
+    },
     TAMBAH_TODO: function TAMBAH_TODO(state, todo) {
       state.todos.push(todo);
     },
     HAPUS_TODO: function HAPUS_TODO(state, todo) {
       var todos = state.todos;
-      console.log('indexOf todo', todos.indexOf(todo));
+      console.log("indexOf todo", todos.indexOf(todo));
       todos.splice(todos.indexOf(todo), 1);
     },
     COMPLETE_TODO: function COMPLETE_TODO(state, todo) {
@@ -2128,17 +2122,47 @@ vue__WEBPACK_IMPORTED_MODULE_0__.default.use(vuex__WEBPACK_IMPORTED_MODULE_1__.d
     }
   },
   actions: {
-    tambahTodo: function tambahTodo(_ref, payload) {
+    DAPAT_TODO: function DAPAT_TODO(_ref) {
       var commit = _ref.commit;
-      commit('TAMBAH_TODO', payload);
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/todos").then(function (res) {
+        commit("DAPAT_TODO", res.data);
+      });
     },
-    deleteTodo: function deleteTodo(_ref2, payload) {
-      var commit = _ref2.commit;
-      commit('HAPUS_TODO', payload);
+    TAMBAH_TODO: function TAMBAH_TODO(_ref2, payload) {
+      var commit = _ref2.commit,
+          dispatch = _ref2.dispatch;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/todos", payload).then(function (res) {
+        if (res.data === "added") {
+          console.log("ok");
+          dispatch("DAPAT_TODO");
+        }
+      })["catch"](function (err) {
+        return console.log(err);
+      }); //commit('TAMBAH_TODO', payload)
     },
-    completeTodo: function completeTodo(_ref3, payload) {
-      var commit = _ref3.commit;
-      commit('COMPLETE_TODO', payload);
+    DELETE_TODO: function DELETE_TODO(_ref3, payload) {
+      var commit = _ref3.commit,
+          dispatch = _ref3.dispatch;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().delete("/api/todos/".concat(payload.id)).then(function (res) {
+        if (res.data === 'deleted') {
+          console.log('deleted');
+          dispatch('DAPAT_TODO');
+        }
+      }); //commit("HAPUS_TODO", payload);
+    },
+    COMPLETE_TODO: function COMPLETE_TODO(_ref4, payload) {
+      var commit = _ref4.commit,
+          dispatch = _ref4.dispatch;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/todos/".concat(payload.id), {
+        title: payload.title,
+        completed: payload.completed,
+        _method: 'patch'
+      }).then(function (res) {
+        if (res.data === 'updated') {
+          console.log('updated');
+          dispatch('DAPAT_TODO');
+        }
+      }); //commit("COMPLETE_TODO", payload);
     }
   }
 }));
@@ -25682,47 +25706,6 @@ runtime.setup(pusher_Pusher);
 
 /***/ }),
 
-/***/ "./node_modules/uniqid/index.js":
-/*!**************************************!*\
-  !*** ./node_modules/uniqid/index.js ***!
-  \**************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-/* provided dependency */ var process = __webpack_require__(/*! process/browser */ "./node_modules/process/browser.js");
-/* 
-(The MIT License)
-Copyright (c) 2014-2021 Halász Ádám <adam@aimform.com>
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-//  Unique Hexatridecimal ID Generator
-// ================================================
-
-//  Dependencies
-// ================================================
-var pid = typeof process !== 'undefined' && process.pid ? process.pid.toString(36) : '' ;
-var address = '';
-if(false){ var i, mac, networkInterfaces; } 
-
-//  Exports
-// ================================================
-module.exports = module.exports.default = function(prefix, suffix){ return (prefix ? prefix : '') + address + pid + now().toString(36) + (suffix ? suffix : ''); }
-module.exports.process = function(prefix, suffix){ return (prefix ? prefix : '') + pid + now().toString(36) + (suffix ? suffix : ''); }
-module.exports.time    = function(prefix, suffix){ return (prefix ? prefix : '') + now().toString(36) + (suffix ? suffix : ''); }
-
-//  Helpers
-// ================================================
-function now(){
-    var time = Date.now();
-    var last = now.last || time;
-    return now.last = time > last ? time : last + 1;
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-fragment/dist/vue-fragment.esm.js":
 /*!************************************************************!*\
   !*** ./node_modules/vue-fragment/dist/vue-fragment.esm.js ***!
@@ -26134,7 +26117,7 @@ var render = function() {
           attrs: { type: "button" },
           on: {
             click: function($event) {
-              return _vm.tambahTodo(_vm.todoTeks)
+              return _vm.tambahTodo(_vm.todoTitle)
             }
           }
         },
@@ -26172,37 +26155,37 @@ var render = function() {
         {
           name: "model",
           rawName: "v-model",
-          value: _vm.todo.done,
-          expression: "todo.done"
+          value: _vm.todo.completed,
+          expression: "todo.completed"
         }
       ],
       attrs: { type: "checkbox" },
       domProps: {
-        checked: Array.isArray(_vm.todo.done)
-          ? _vm._i(_vm.todo.done, null) > -1
-          : _vm.todo.done
+        checked: Array.isArray(_vm.todo.completed)
+          ? _vm._i(_vm.todo.completed, null) > -1
+          : _vm.todo.completed
       },
       on: {
         change: [
           function($event) {
-            var $$a = _vm.todo.done,
+            var $$a = _vm.todo.completed,
               $$el = $event.target,
               $$c = $$el.checked ? true : false
             if (Array.isArray($$a)) {
               var $$v = null,
                 $$i = _vm._i($$a, $$v)
               if ($$el.checked) {
-                $$i < 0 && _vm.$set(_vm.todo, "done", $$a.concat([$$v]))
+                $$i < 0 && _vm.$set(_vm.todo, "completed", $$a.concat([$$v]))
               } else {
                 $$i > -1 &&
                   _vm.$set(
                     _vm.todo,
-                    "done",
+                    "completed",
                     $$a.slice(0, $$i).concat($$a.slice($$i + 1))
                   )
               }
             } else {
-              _vm.$set(_vm.todo, "done", $$c)
+              _vm.$set(_vm.todo, "completed", $$c)
             }
           },
           _vm.tick
@@ -26210,7 +26193,7 @@ var render = function() {
       }
     }),
     _vm._v(" "),
-    _c("span", [_vm._v(_vm._s(_vm.todo.text))]),
+    _c("span", [_vm._v(_vm._s(_vm.todo.title))]),
     _vm._v(" "),
     _c("i", {
       staticClass: "float-right fas fa-times-circle",

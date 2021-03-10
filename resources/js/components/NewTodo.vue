@@ -1,9 +1,14 @@
 <template>
     <div class="input-group mb-3">
-        <input type="text" v-model="todoTeks" class="form-control" @keyup.enter="tambahTodo(todoTeks)" />
+        <input
+            type="text"
+            v-model="todoTeks"
+            class="form-control"
+            @keyup.enter="tambahTodo(todoTeks)"
+        />
         <div class="input-group-append">
             <button
-                @click="tambahTodo(todoTeks)"
+                @click="tambahTodo(todoTitle)"
                 class="btn btn-outline-success"
                 type="button"
             >
@@ -14,15 +19,14 @@
 </template>
 <script>
 import { mapActions } from "vuex";
-import uniqid from "uniqid";
 export default {
     data: () => ({
         todoTeks: ""
     }),
     methods: {
-        tambahTodo(text) {
-            const todo = { id: uniqid(), text, done: false };
-            this.$store.dispatch("tambahTodo", todo);
+        tambahTodo(title) {
+            const todo = { title, done: false };
+            this.$store.dispatch("TAMBAH_TODO", todo);
             this.todoTeks = "";
         }
     }

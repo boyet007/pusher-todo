@@ -18,11 +18,14 @@ export default {
     components: { Todo },
     methods: {
         deleteTodo(id) {
-            this.$store.dispatch('deleteTodo', id);
+            this.$store.dispatch('DELETE_TODO', id);
         },
         completeTodo(todo) {
-            this.$store.dispatch('completeTodo', todo)
+            this.$store.dispatch('COMPLETE_TODO', todo)
         }
+    },
+      mounted() {
+        this.$store.dispatch('DAPAT_TODO');
     }
 };
 </script>
