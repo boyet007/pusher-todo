@@ -1874,6 +1874,16 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     TodoList: _components_TodoList__WEBPACK_IMPORTED_MODULE_1__.default,
     NewTodo: _components_NewTodo_vue__WEBPACK_IMPORTED_MODULE_0__.default
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    window.Echo.channel("newTask").listen(".task-created", function (e) {
+      _this.$store.dispatch("DAPAT_TODO");
+    });
+    window.Echo.channel("taskRemoved").listen(".task-removed", function (e) {
+      _this.$store.dispatch("DAPAT_TODO");
+    });
   }
 });
 
@@ -2007,9 +2017,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     completeTodo: function completeTodo(todo) {
       this.$store.dispatch('COMPLETE_TODO', todo);
     }
-  },
-  mounted: function mounted() {
-    this.$store.dispatch('DAPAT_TODO');
   }
 });
 
@@ -2039,6 +2046,10 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_3__.default({
   store: _store_js__WEBPACK_IMPORTED_MODULE_1__.default,
   components: {
     App: _App_vue__WEBPACK_IMPORTED_MODULE_0__.default
+  },
+  created: function created() {
+    this.$store.dispatch('DAPAT_TODO');
+    console.log('echo', Echo);
   },
   render: function render(h) {
     return h(_App_vue__WEBPACK_IMPORTED_MODULE_0__.default);
@@ -2077,8 +2088,9 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__.default({
   broadcaster: 'pusher',
   key: "7eef6aad57f8c75e7d1e",
   cluster: "eu",
-  encrypted: false
-});
+  encrypted: true
+}); //Subscribe to the channel we specified in our Adonis Application
+//let channel = Pusher.subscribe('comment-channel')
 
 /***/ }),
 
@@ -2133,7 +2145,6 @@ vue__WEBPACK_IMPORTED_MODULE_1__.default.use(vuex__WEBPACK_IMPORTED_MODULE_2__.d
           dispatch = _ref2.dispatch;
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/todos", payload).then(function (res) {
         if (res.data === "added") {
-          console.log("ok");
           dispatch("DAPAT_TODO");
         }
       })["catch"](function (err) {
@@ -26117,7 +26128,7 @@ var render = function() {
           attrs: { type: "button" },
           on: {
             click: function($event) {
-              return _vm.tambahTodo(_vm.todoTitle)
+              return _vm.tambahTodo(_vm.todoTeks)
             }
           }
         },

@@ -7,10 +7,11 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TaskRemoved
+class TaskRemoved implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -32,10 +33,10 @@ class TaskRemoved
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('taskRemoved');
+        return new Channel('taskRemoved');
     }
 
-    public function braodcastAs() {
+    public function broadcastAs() {
         return 'task-removed';
     }
 }

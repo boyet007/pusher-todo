@@ -24,8 +24,5 @@ export default {
             this.$store.dispatch('COMPLETE_TODO', todo)
         }
     },
-      mounted() {
-        this.$store.dispatch('DAPAT_TODO');
-    }
 };
 </script>

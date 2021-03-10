@@ -4,7 +4,7 @@
             <div class="card-body">
                 <img class="card-img-top" :src="img_url" />
                 <div class="card-body">
-                        <todo-list />
+                    <todo-list />
                 </div>
                 <div class="card-actions">
                     <new-todo />
@@ -20,10 +20,17 @@ import TodoList from "./components/TodoList";
 export default {
     data() {
         return {
-            img_url: "../images/todo.png",
+            img_url: "../images/todo.png"
         };
     },
     components: { TodoList, NewTodo },
- 
+    mounted() {
+        window.Echo.channel("newTask").listen(".task-created", e => {
+            this.$store.dispatch("DAPAT_TODO");
+        });
+        window.Echo.channel("taskRemoved").listen(".task-removed", e => {
+            this.$store.dispatch("DAPAT_TODO");
+        });
+    }
 };
 </script>

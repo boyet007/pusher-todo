@@ -8,7 +8,7 @@
         />
         <div class="input-group-append">
             <button
-                @click="tambahTodo(todoTitle)"
+                @click="tambahTodo(todoTeks)"
                 class="btn btn-outline-success"
                 type="button"
             >

@@ -35,7 +35,6 @@ export default new Vuex.Store({
                 .post("/api/todos", payload)
                 .then(res => {
                     if (res.data === "added") {
-                        console.log("ok");
                         dispatch("DAPAT_TODO");
                     }
                 })
